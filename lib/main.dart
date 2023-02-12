@@ -19,7 +19,7 @@ class MyApp extends StatelessWidget {
       builder: (context, a) {
         return  GetMaterialApp(
           debugShowCheckedModeBanner: false,
-          home: Home(),
+          home: HomePage(),
         );
       },
     );

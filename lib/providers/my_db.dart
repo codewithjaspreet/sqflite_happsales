@@ -1,6 +1,10 @@
+import 'dart:io';
+
 import 'package:sqflite/sqflite.dart';
+import 'package:path/path.dart';
 
 import '../models/Employee.dart';
+import 'package:path_provider/path_provider.dart';
 
 class DBProvider{
 
@@ -17,19 +21,17 @@ class DBProvider{
   }
 
   initDB() async {
-    return await openDatabase(
-      'my_db.db',
-      version: 1,
-      onOpen: (db) {},
-      onCreate: (Database db, int version) async {
-        await db.execute('CREATE TABLE Contact ('
-            'ContactID INTEGER PRIMARY KEY,'
-            'ContactName TEXT,'
-            'AccountName TEXT,'
-            ')'
-        );
-      }
-    );
+    Directory documentsDirectory = await getApplicationDocumentsDirectory();
+    final path = join(documentsDirectory.path, 'employee_manager.db');
+
+    return await openDatabase(path, version: 1, onOpen: (db) {},
+        onCreate: (Database db, int version) async {
+          await db.execute('CREATE TABLE Employee('
+              'ContactID INTEGER PRIMARY KEY,'
+              'ContactName TEXT'
+              'AccountName TEXT'
+              ')');
+        });
   }
 
   // insert employee
