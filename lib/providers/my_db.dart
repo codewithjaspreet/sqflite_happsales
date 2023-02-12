@@ -62,7 +62,6 @@ class DBProvider{
     return res.isNotEmpty ? Employee.fromJson(res.first) : Employee();
   }
 
-  // update employee
 
   Future<int> updateEmployee(Employee newEmployee) async {
     final db = await database;
