@@ -24,32 +24,46 @@ class DBProvider{
     Directory documentsDirectory = await getApplicationDocumentsDirectory();
     final path = join(documentsDirectory.path, 'employee_manager.db');
 
-    return await openDatabase(path, version: 1, onOpen: (db) {},
+    final String categoryTable = "categoryTable";
+    final String contactId = "contactId";
+    final String accountName = "accountName";
+    final String contactName = "contactName";
+
+    return await openDatabase(path, version: 5, onOpen: (db) {},
         onCreate: (Database db, int version) async {
-          await db.execute('CREATE TABLE Employee('
-              'ContactID INTEGER PRIMARY KEY,'
-              'ContactName TEXT'
-              'AccountName TEXT'
-              ')');
+          await db.execute(
+              "CREATE TABLE $categoryTable("
+                  "$contactId INTEGER PRIMARY KEY, "
+                  "$contactName TEXT, "
+                  "$accountName TEXT)"
+          );
         });
   }
 
   // insert employee
+  createEmployee(Employee newEmployee) async {
+    conflictAlgorithm: ConflictAlgorithm.replace;
 
- createEmployee(Employee newEmployee) async {
     final db = await database;
+    final int? contactId = newEmployee.contactID;
+    final String? contactName = newEmployee.contactName;
+    final String? accountName = newEmployee.accountName;
+
     final res = await db.rawInsert(
-      "INSERT Into Employee (id, name, age)"
-      " VALUES (${newEmployee.contactID}, ${newEmployee.contactName}, ${newEmployee.accountName})"
+
+
+        "INSERT INTO categoryTable (contactId, contactName, accountName) VALUES ($contactId, '$contactName', '$accountName')"
+
     );
     return res;
   }
+
 
   // get all employees
 
   Future<List<Employee>> getAllEmployees() async {
     final db = await database;
-    final res = await db.query('Employee');
+    final res = await db.query('categoryTable');
 
     List<Employee> list = res.isNotEmpty ? res.map((c) => Employee.fromJson(c)).toList() : [];
     return list;
@@ -59,7 +73,7 @@ class DBProvider{
 
   Future<Employee> getEmployeeById(int id) async {
     final db = await database;
-    final res = await db.query('Employee', where: 'id = ?', whereArgs: [id]);
+    final res = await db.query('categoryTable', where: 'id = ?', whereArgs: [id]);
 
     return res.isNotEmpty ? Employee.fromJson(res.first) : Employee();
   }
@@ -67,7 +81,7 @@ class DBProvider{
 
   Future<int> updateEmployee(Employee newEmployee) async {
     final db = await database;
-    final res = await db.update('Employee', newEmployee.toJson(), where: 'id = ?', whereArgs: [newEmployee.contactID]);
+    final res = await db.update('categoryTable', newEmployee.toJson(), where: 'id = ?', whereArgs: [newEmployee.contactID]);
 
     return res;
   }
@@ -76,7 +90,7 @@ class DBProvider{
 
   Future<int> deleteEmployee(int id) async {
     final db = await database;
-    final res = await db.delete('Employee', where: 'id = ?', whereArgs: [id]);
+    final res = await db.delete('categoryTable', where: 'id = ?', whereArgs: [id]);
 
     return res;
   }
@@ -85,7 +99,7 @@ class DBProvider{
 
   Future<int> deleteAllEmployees() async {
     final db = await database;
-    final res = await db.rawDelete('DELETE FROM Employee');
+    final res = await db.rawDelete('DELETE FROM categoryTable');
 
     return res;
   }
