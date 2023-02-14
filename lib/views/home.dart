@@ -1,16 +1,24 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:happysales_sqlite/providers/api_provider.dart';
 
 import '../providers/my_db.dart';
 
 class HomePage extends StatefulWidget {
-
   @override
   _HomePageState createState() => _HomePageState();
 }
 
 class _HomePageState extends State<HomePage> {
   var isLoading = false;
+  APIController apiController = Get.put(APIController());
+
+@override
+  void initState() {
+    // TODO: implement initState
+    apiController.getAllEmployees();
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -40,9 +48,9 @@ class _HomePageState extends State<HomePage> {
         ],
       ),
       body: isLoading
-          ? Center(
-        child: CircularProgressIndicator(),
-      )
+          ? const Center(
+              child: CircularProgressIndicator(),
+            )
           : _buildEmployeeListView(),
     );
   }
@@ -52,11 +60,12 @@ class _HomePageState extends State<HomePage> {
       isLoading = true;
     });
 
-    var apiProvider = ApiProvider();
-    await apiProvider.getAllEmployees();
+    await apiController.getAllEmployees();
 
-    // wait for 2 seconds to simulate loading of data
-    await Future.delayed(const Duration(seconds: 2));
+  apiController.employeeList.refresh();
+    // wait for 1 second to simulate loading of data
+
+     await Future.delayed(Duration(seconds: 1));
 
     setState(() {
       isLoading = false;
@@ -70,8 +79,11 @@ class _HomePageState extends State<HomePage> {
 
     await DBProvider.db.deleteAllEmployees();
 
+    apiController.employeeList.clear();
+    apiController.employeeList.refresh();
+    apiController.downloaded.value = false;
+    apiController.downloaded.refresh();
     // wait for 1 second to simulate loading of data
-    await Future.delayed(const Duration(seconds: 1));
 
     setState(() {
       isLoading = false;
@@ -81,152 +93,20 @@ class _HomePageState extends State<HomePage> {
   }
 
   _buildEmployeeListView() {
-    return FutureBuilder(
-      future: DBProvider.db.getAllEmployees(),
-      builder: (BuildContext context, AsyncSnapshot snapshot) {
-        if (!snapshot.hasData) {
-          return Center(
-            child: CircularProgressIndicator(),
-          );
-        } else {
-          return ListView.separated(
-            separatorBuilder: (context, index) => Divider(
-              color: Colors.black12,
-            ),
-            itemCount: snapshot.data.length,
-            itemBuilder: (BuildContext context, int index) {
-              return ListTile(
-                leading: Text(
-                  "${index + 1}",
-                  style: TextStyle(fontSize: 20.0),
-                ),
-                title: Text(
-                    "Name: ${snapshot.data[index].firstName} ${snapshot.data[index].lastName} "),
-                subtitle: Text('EMAIL: ${snapshot.data[index].email}'),
-              );
-            },
-          );
-        }
-      },
-    );
+    return GetX<APIController>(builder: (controller) {
+      return ListView.builder(
+          itemCount: controller.employeeList.length,
+          itemBuilder: (context, index) {
+            return Card(
+              child: ListTile(
+                title: Text(apiController.employeeList[index].accountName ??
+                    "Failed to load"),
+                subtitle: Text(
+                    apiController.employeeList[index].contactID.toString() ??
+                        " Failed to load"),
+              ),
+            );
+          });
+    });
   }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
