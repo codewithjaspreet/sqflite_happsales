@@ -30,11 +30,11 @@ class DBProvider {
 
     var temp_db = await openDatabase(path, version: 5, onOpen: (db) {},
         onCreate: (Database db, int version) async {
-      await db.execute("CREATE TABLE $categoryTable("
-          "$contactId INTEGER PRIMARY KEY, "
-          "$contactName TEXT, "
-          "$accountName TEXT )");
-    });
+          await db.execute("CREATE TABLE $categoryTable("
+              "$contactId INTEGER PRIMARY KEY, "
+              "$contactName TEXT, "
+              "$accountName TEXT )");
+        });
     // print("DB )
     var result = await temp_db.rawQuery("SELECT * FROM $categoryTable");
     return temp_db;
@@ -79,7 +79,7 @@ class DBProvider {
     // print("Replay from db =>$res");
 
     List<Employee> list =
-        res.isNotEmpty ? res.map((c) => Employee.fromJson(c)).toList() : [];
+    res.isNotEmpty ? res.map((c) => Employee.fromJson(c)).toList() : [];
 
     // print("Made Employee List => ");
     // list.forEach((element) {
@@ -94,7 +94,7 @@ class DBProvider {
   Future<Employee> getEmployeeById(int id) async {
     final db = await database;
     final res =
-        await db.query('categoryTable', where: 'id = ?', whereArgs: [id]);
+    await db.query('categoryTable', where: 'id = ?', whereArgs: [id]);
 
     return res.isNotEmpty ? Employee.fromJson(res.first) : Employee();
   }
@@ -112,7 +112,7 @@ class DBProvider {
   Future<int> deleteEmployee(int id) async {
     final db = await database;
     final res =
-        await db.delete('categoryTable', where: 'id = ?', whereArgs: [id]);
+    await db.delete('categoryTable', where: 'id = ?', whereArgs: [id]);
 
     return res;
   }

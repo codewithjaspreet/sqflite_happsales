@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:happysales_sqlite/providers/api_provider.dart';
 
@@ -13,7 +14,7 @@ class _HomePageState extends State<HomePage> {
   var isLoading = false;
   APIController apiController = Get.put(APIController());
 
-@override
+  @override
   void initState() {
     // TODO: implement initState
     apiController.getAllEmployees();
@@ -24,13 +25,16 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Api to sqlite'),
+        leading: const Icon(Icons.arrow_back_ios,color: Colors.black,),
+        elevation: 0,
+        backgroundColor: Colors.white,
+        title: Text('Contacts' ,style: TextStyle(fontWeight: FontWeight.bold ,color: Colors.black),),
         centerTitle: true,
         actions: <Widget>[
           Container(
             padding: EdgeInsets.only(right: 10.0),
             child: IconButton(
-              icon: Icon(Icons.settings_input_antenna),
+              icon: Icon(Icons.settings_input_antenna,color: Colors.black,),
               onPressed: () async {
                 await _loadFromApi();
               },
@@ -39,7 +43,7 @@ class _HomePageState extends State<HomePage> {
           Container(
             padding: EdgeInsets.only(right: 10.0),
             child: IconButton(
-              icon: Icon(Icons.delete),
+              icon: Icon(Icons.delete ,color: Colors.black,),
               onPressed: () async {
                 await _deleteData();
               },
@@ -49,8 +53,8 @@ class _HomePageState extends State<HomePage> {
       ),
       body: isLoading
           ? const Center(
-              child: CircularProgressIndicator(),
-            )
+        child: CircularProgressIndicator(),
+      )
           : _buildEmployeeListView(),
     );
   }
@@ -62,10 +66,10 @@ class _HomePageState extends State<HomePage> {
 
     await apiController.getAllEmployees();
 
-  apiController.employeeList.refresh();
+    apiController.employeeList.refresh();
     // wait for 1 second to simulate loading of data
 
-     await Future.delayed(Duration(seconds: 1));
+    await Future.delayed(Duration(seconds: 1));
 
     setState(() {
       isLoading = false;
@@ -99,10 +103,13 @@ class _HomePageState extends State<HomePage> {
           itemBuilder: (context, index) {
             return Card(
               child: ListTile(
-                title: Text(apiController.employeeList[index].accountName ??
+                leading: CircleAvatar(
+                  child: Text(controller.employeeList[index].contactName![0].toUpperCase().toString(),style: TextStyle(fontSize: 18.sp ,fontWeight: FontWeight.bold),),
+                ),
+                title: Text(apiController.employeeList[index].contactName ??
                     "Failed to load"),
                 subtitle: Text(
-                    apiController.employeeList[index].contactID.toString() ??
+                    apiController.employeeList[index].accountName.toString() ??
                         " Failed to load"),
               ),
             );
