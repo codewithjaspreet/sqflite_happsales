@@ -1,10 +1,10 @@
 # happysales_sqlite
 
-A new Flutter project.
+Also provided with the deleted customer options , all the crud operation in my_db.dart
 
-## Getting Started
+## Demo - 
+![happy_sales](https://user-images.githubusercontent.com/85099922/218976658-c883d74b-3ada-421a-8369-7825524d435f.jpeg)
 
-This project is a starting point for a Flutter application.
 
 A few resources to get you started if this is your first Flutter project:
 
